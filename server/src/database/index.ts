@@ -1,6 +1,18 @@
 import mongoose from "mongoose";
 
-mongoose.connect("mongodb://localhost:3000/test");
-mongoose.Promise = global.Promise;
+import "dotenv/config";
 
-export default mongoose;
+
+export default async function connectDatabase() {
+
+    const connectionString = process.env.DATABASE_URI;
+
+    if (!connectionString)
+     throw new Error("Database URI is not set. INTERNAL ERROR");
+    
+    
+    mongoose.connect(connectionString);
+    mongoose.connection.on("connected", function () {
+        console.log("Connected to Database "+"test");
+    });
+}
