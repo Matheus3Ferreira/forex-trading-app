@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     },
     trades: [{
         type: Schema.Types.ObjectId,
-        ref: "Trade"
+        ref: "Trade",
     }],
     createdAt: {
         type: Date,
