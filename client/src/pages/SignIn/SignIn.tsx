@@ -2,7 +2,8 @@ import { ChangeEvent, ChangeEventHandler, FormEvent, useState } from "react";
 import {Button, Form} from "react-bootstrap";
 import toast, { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import "./index.css"
+import "./index.css";
+import api from "../../services/api";
 
 interface IInputField {
     email: string;
@@ -13,33 +14,46 @@ export default function SignIn() {
     const [inputField, setInputField] = useState<IInputField>({
       email: "",
       password: "",
-    })
+    });
   
       
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
     event.preventDefault();
     setInputField({...inputField, [event.currentTarget.name]: event.currentTarget.value});
     };
-    
+
+
+    const signInFunction = async ({email, password}: IInputField) => {
+      const response = await api.post("/sessions/", {email, password});
+      return response;
+    }
     
     const emailValidation = (email: string) => {
-    const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    if (!(regex.test(email)) || !email){
-        toast.error("Email is not valid.")
-        return false;
-    }
-    if (inputField.password.trim() === ""){
-        toast.error("Password is not valid.");
-        return false;
-    }
-    return true;
+      const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+      if (!(regex.test(email)) || !email){
+          toast.error("Email is not valid.");
+        return; 
+      }
+      if (inputField.password.trim() === ""){
+          toast.error("Password is not valid.");;
+        return;
+      }
+      return true;
     }
     
-    const ValidateData = (event: any) => {
+    const ValidateData = async (event: ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
     if (!emailValidation(inputField.email))
-        return false;
+      return;
+    const signInRequest = await toast.promise(signInFunction(inputField), {
+      loading: "Loading",
+      success: "Login Success!",
+      error: "Email/Password incorrect.",
+    });
+    if (signInRequest.status === 200) {
+      
     };
+  }
 
 
     return (
