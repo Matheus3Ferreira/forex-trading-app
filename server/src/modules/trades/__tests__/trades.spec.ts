@@ -20,6 +20,8 @@ describe("Trades Services", () => {
         () => {}
       );
       expect(newTrade).toHaveProperty("_id");
+
+      it("should find trade Id in users list trade", () => {});
     });
   });
 });
