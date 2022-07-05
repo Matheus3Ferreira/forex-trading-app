@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import toast, { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import "./index.css";
 import api from "../../services/api";
 import ValidationFormData from "../../components/ValidationFormData";
@@ -17,13 +17,15 @@ export default function SignIn() {
     password: "",
   });
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
+  const [logged, setLogged] = useState<boolean>(false);
+
+  function handleInputChange(event: ChangeEvent<HTMLInputElement>): void {
     event.preventDefault();
     setInputField({
       ...inputField,
       [event.currentTarget.name]: event.currentTarget.value,
     });
-  };
+  }
 
   async function signInFunction({ email, password }: IInputField) {
     const response = await api.post("/sessions/", { email, password });
@@ -39,13 +41,14 @@ export default function SignIn() {
       error: "Email/Password incorrect.",
     });
     if (signInRequest.status === 200) {
-      //Redirect to dashboard page
+      setLogged(true);
     }
   }
 
   return (
     <div className="sign-in-page bg-dark text-white">
       <Toaster />
+      {logged && <Navigate to="/dashboard" replace={true} />}
       <Form onSubmit={submitForm} className="form-container">
         <header className="form-header">
           <h2>Sign In</h2>

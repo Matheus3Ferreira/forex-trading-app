@@ -1,101 +1,101 @@
-
 import { ChangeEvent, useState } from "react";
-import {Button, Form} from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import toast, { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import ValidationFormData from "../../components/ValidationFormData";
+import api from "../../services/api";
 
 interface IInputField {
-    fullName: string;
-    email: string;
-    password: string;
-  }
+  fullName: string;
+  email: string;
+  password: string;
+}
 
 export default function SignUp() {
+  const [inputField, setInputField] = useState<IInputField>({
+    fullName: "",
+    email: "",
+    password: "",
+  });
 
-    const [inputField, setInputField] = useState<IInputField>({
-        fullName: "",
-        email: "",
-        password: "",
-      })
+  const [logged, setLogged] = useState<boolean>(false);
 
-      const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
-        event.preventDefault();
-        setInputField({...inputField, [event.currentTarget.name]: event.currentTarget.value});
-      };
-      
-      
-      const emailValidation = (email: string) => {
-        const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        if (inputField.fullName.trim() === ""){
-          toast.error("Full name is not valid.");
-          return false;
-        }
-        if (!(regex.test(email)) || !email){
-          toast.error("Email is not valid.")
-          return false;
-        }
-        if (inputField.password.trim() === ""){
-          toast.error("Password is not valid.");
-          return false;
-        }
-        return true;
-      }
-      
-      const ValidateData = (event: any) => {
-        event.preventDefault();
-        if (!emailValidation(inputField.email))
-          return false;
-      };
+  function handleInputChange(event: ChangeEvent<HTMLInputElement>): void {
+    event.preventDefault();
+    setInputField({
+      ...inputField,
+      [event.currentTarget.name]: event.currentTarget.value,
+    });
+  }
 
-    return (
-        <div className="sign-in-page bg-dark text-white">
-          <Toaster/>
-            <Form onSubmit={ValidateData} className="form-container">
-            <header className="form-header">
-                <h2>Sign Up</h2>
-              </header>
-              <div className="line-form" />
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                <Form.Label>Full name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="fullName"
-                  placeholder="Matheus da Silva Ferreira"
-                  autoFocus
-                  value={inputField.fullName}
-                  onChange={handleInputChange}
-                  />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  placeholder="youremail@example.com"
-                  value={inputField.email}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  placeholder="********"
-                  value={inputField.password}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <div className="line-form" />
-              <footer className="form-footer">
-                <span>
-                  Already have an account? <Link to="/sign-in">Sign In</Link>
-                </span>
-                <Button variant="primary" type="submit">
-                  Registry
-                </Button>
-              </footer>
-            </Form>
-        </div>
-    )
+  async function signUpFunction({ fullName, email, password }: IInputField) {
+    const response = await api.post("/users", { fullName, email, password });
+    return response;
+  }
+
+  async function submitForm(event: ChangeEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!ValidationFormData(inputField)) return;
+    const signUpRequest = await toast.promise(signUpFunction(inputField), {
+      loading: "Loading",
+      success: "Login Success!",
+      error: "Email/Password incorrect.",
+    });
+    if (signUpRequest.status === 200) {
+      setLogged(true);
+    }
+  }
+
+  return (
+    <div className="sign-in-page bg-dark text-white">
+      <Toaster />
+      {logged && <Navigate to="/dashboard" replace={true} />}
+      <Form onSubmit={submitForm} className="form-container">
+        <header className="form-header">
+          <h2>Sign Up</h2>
+        </header>
+        <div className="line-form" />
+        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form.Label>Full name</Form.Label>
+          <Form.Control
+            type="text"
+            name="fullName"
+            placeholder="Matheus da Silva Ferreira"
+            autoFocus
+            value={inputField.fullName}
+            onChange={handleInputChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
+            placeholder="youremail@example.com"
+            value={inputField.email}
+            onChange={handleInputChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            name="password"
+            placeholder="********"
+            value={inputField.password}
+            onChange={handleInputChange}
+          />
+        </Form.Group>
+        <div className="line-form" />
+        <footer className="form-footer">
+          <span>
+            Already have an account? <Link to="/sign-in">Sign In</Link>
+          </span>
+          <Button variant="primary" type="submit">
+            Registry
+          </Button>
+        </footer>
+      </Form>
+    </div>
+  );
 }
