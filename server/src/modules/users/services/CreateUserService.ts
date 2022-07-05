@@ -1,31 +1,34 @@
 import { hash } from "bcryptjs";
 import User from "../models/user";
 import GenerateTokenService from "./GenerateTokenService";
+import IUser from "./IUserService";
 
 interface IRequest {
-    name: string;
-    email: string;
-    password: string;
+  name: string;
+  email: string;
+  password: string;
 }
 
 export default class CreateUserService {
-    public async execute({name, email, password}: IRequest) {
+  public async execute({ name, email, password }: IRequest) {
+    const existingEmail: IUser | any = await User.findOne({ email: email });
 
-        const hashedPassword = await hash(password, 8);
+    if (!!existingEmail) throw new Error("Email already exists");
 
-        const user = await User.create({
-            name,
-            email,
-            password: hashedPassword
-        });
+    const hashedPassword = await hash(password, 8);
 
-        if (!user)
-            throw new Error("Registration Failed");
+    const user: IUser | any = await User.create({
+      name: name,
+      email: email,
+      password: hashedPassword,
+    });
 
-        user.password = "";
+    if (!user) throw new Error("Registration Failed");
 
-        const token = GenerateTokenService(user._id);
+    user.password = "";
 
-        return {token, user};
-    }
+    const token: string = GenerateTokenService(user._id);
+
+    return { token, user };
+  }
 }

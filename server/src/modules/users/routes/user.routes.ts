@@ -5,16 +5,20 @@ import UserController from "../controllers/UserController";
 const usersRouter = Router();
 const userController = new UserController();
 
-usersRouter.post("/", celebrate({
+usersRouter.post(
+  "/",
+  celebrate({
     [Segments.BODY]: {
-        name: Joi.string().required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().required(),
-    }
-}), userController.create);
+      name: Joi.string().required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    },
+  }),
+  userController.create
+);
 
-usersRouter.get("/:email", userController.findOneByEmail);
+usersRouter.get("/:id", userController.findOne);
 
-// usersRouter.get("/getall/test", userController.findAll);
+usersRouter.delete("/:id", userController.delete);
 
 export default usersRouter;
