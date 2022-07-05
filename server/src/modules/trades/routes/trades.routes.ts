@@ -6,7 +6,7 @@ const tradesRouter = Router();
 const tradeController = new TradeController();
 
 tradesRouter.post(
-  "/:id",
+  "/",
   celebrate({
     [Segments.BODY]: {
       volume: Joi.number().required(),
@@ -18,7 +18,7 @@ tradesRouter.post(
   tradeController.open
 );
 
-tradesRouter.put("/:id", tradeController.close);
+tradesRouter.put("/", tradeController.close);
 
 tradesRouter.get(
   "/currencies/",

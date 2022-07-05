@@ -31,7 +31,7 @@ export default class UserController {
     response: Response,
     next: NextFunction
   ): Promise<Response | void> {
-    const id: string = request.params.id;
+    const id: string = request.userId;
 
     const findUser = new findOneByIdService();
     try {
@@ -48,7 +48,7 @@ export default class UserController {
     response: Response,
     next: NextFunction
   ): Promise<Response | void> {
-    const id: string = request.params.id;
+    const id: string = request.userId;
 
     const deleteService = new DeleteUserService();
     try {

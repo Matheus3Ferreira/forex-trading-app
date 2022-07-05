@@ -23,7 +23,7 @@ export default class TradeController {
   ): Promise<Response | void> {
     const { volume, type, from, to }: IRequestBodyCreate = request.body;
 
-    const userId: string = request.params.id;
+    const userId: string = request.userId;
 
     const openTradeService = new OpenTradeService();
     try {
@@ -44,7 +44,7 @@ export default class TradeController {
   }
 
   public async close(request: Request, response: Response, next: NextFunction) {
-    const tradeId: string = request.params.id;
+    const tradeId: string = request.userId;
 
     const closeTradeService = new CloseTradeService();
 

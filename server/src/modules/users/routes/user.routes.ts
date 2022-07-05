@@ -1,5 +1,6 @@
 import { celebrate, Joi, Segments } from "celebrate";
 import { Router } from "express";
+import ensureAuthenticated from "../../../middlewares/ensureAuthenticated";
 import UserController from "../controllers/UserController";
 
 const usersRouter = Router();
@@ -17,8 +18,8 @@ usersRouter.post(
   userController.create
 );
 
-usersRouter.get("/:id", userController.findOne);
+usersRouter.get("/", ensureAuthenticated, userController.findOne);
 
-usersRouter.delete("/:id", userController.delete);
+usersRouter.delete("/", ensureAuthenticated, userController.delete);
 
 export default usersRouter;
