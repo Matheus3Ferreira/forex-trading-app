@@ -6,12 +6,11 @@ interface IFormData {
   password: string;
 }
 
-export default function ValidationFormData({
+export default function ValidationAuthenticationData({
   fullName = undefined,
   email,
   password,
 }: IFormData): boolean {
-  // If don't want to validate fullName, just pass.
   if (fullName != undefined) {
     if (fullName.trim() === "") {
       toast.error("Full name is not valid.");
