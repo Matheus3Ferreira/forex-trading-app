@@ -1,45 +1,73 @@
-import { Request, Response } from "express";
-import User from "../../users/models/user";
-import Trade from "../models/trades";
+import { NextFunction, Request, Response } from "express";
+import CloseTradeService from "../services/CloseTradeService";
+import GetCurrency from "../services/GetCurrencyService";
+import OpenTradeService from "../services/OpenTradeService";
 
-
-export default class TradeController {
-    public async create(request: Request, response: Response): Promise<Response> {
-
-        const {openPrice, volume, type} = request.body;
-
-        const userEmail = request.params.email;
-        
-        if (!openPrice)
-            throw new Error("Invalid open price");
-            
-        if (!volume || volume < 0.01 || volume > 100)
-            throw new Error("Invalid volume");
-        
-        if (!type || type != "sell" && type != "buy")
-            throw new Error("Invalid type")
-        
-        if (!userEmail)
-            throw new Error("Invalid user email");    
-            
-        const user = await User.findOne({email: userEmail});
-        
-        if (!user) 
-            throw new Error("User not found");
-
-        const trade = await Trade.create(request.body);
-      
-        if (!trade)
-            throw new Error("Registration Failed.");
-
-        await trade.save();
-
-        user.trades?.push(trade);
-
-        user.save();
-
-        return response.status(201).json(trade);
-
-    }
+interface IRequestBodyCreate {
+  volume: number;
+  type: string;
+  to: string;
+  from: string;
 }
 
+interface IRequestBodyCurrency {
+  to: string;
+  from: string;
+}
+
+export default class TradeController {
+  public async open(
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    const { volume, type, from, to }: IRequestBodyCreate = request.body;
+
+    const userId: string = request.params.id;
+
+    const openTradeService = new OpenTradeService();
+    try {
+      const trade = await openTradeService.execute(
+        {
+          volume,
+          type,
+          userId,
+          from,
+          to,
+        },
+        next
+      );
+      return response.status(201).json(trade);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  public async close(request: Request, response: Response, next: NextFunction) {
+    const tradeId: string = request.params.id;
+
+    const closeTradeService = new CloseTradeService();
+
+    try {
+      const closedTrade = await closeTradeService.execute(tradeId, next);
+      return response.status(200).json(closedTrade);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  public async currency(
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ) {
+    const { to, from }: IRequestBodyCurrency = request.body;
+    const currencyService = new GetCurrency();
+    try {
+      const currency = await currencyService.execute({ to, from });
+      return response.status(200).json(currency);
+    } catch (err) {
+      next(err);
+    }
+  }
+}

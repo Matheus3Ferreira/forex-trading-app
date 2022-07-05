@@ -1,22 +1,34 @@
 import { celebrate, Joi, Segments } from "celebrate";
 import { Router } from "express";
 import TradeController from "../controllers/TradeController";
-import "express-async-errors";
+
 const tradesRouter = Router();
 const tradeController = new TradeController();
 
-tradesRouter.post("/:email", 
-    celebrate({
+tradesRouter.post(
+  "/:id",
+  celebrate({
     [Segments.BODY]: {
-        openPrice: Joi.number().required(),
-        volume: Joi.number().required(),
-        type: Joi.string().required().lowercase(),
+      volume: Joi.number().required(),
+      type: Joi.string().required().lowercase(),
+      to: Joi.string().required().uppercase(),
+      from: Joi.string().required().uppercase(),
     },
-}), 
-tradeController.create);
+  }),
+  tradeController.open
+);
 
-tradesRouter.get("/:email", (request, response) => {
-    return response.json({"olá": ` Olá id ${request.params.email}`})
-})
+tradesRouter.put("/:id", tradeController.close);
+
+tradesRouter.get(
+  "/currencies/",
+  celebrate({
+    [Segments.BODY]: {
+      to: Joi.string().required().uppercase(),
+      from: Joi.string().required().uppercase(),
+    },
+  }),
+  tradeController.currency
+);
 
 export default tradesRouter;
