@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import toast, { Toaster } from "react-hot-toast";
 import { Link, Navigate } from "react-router-dom";
-import ValidationFormData from "../../components/ValidationFormData";
+import ValidationAuthenticationData from "../../components/ValidationAuthenticationData/ValidationAuthenticationData";
 import api from "../../services/api";
 
 interface IInputField {
@@ -35,13 +35,14 @@ export default function SignUp() {
 
   async function submitForm(event: ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!ValidationFormData(inputField)) return;
+    if (!ValidationAuthenticationData(inputField)) return;
     const signUpRequest = await toast.promise(signUpFunction(inputField), {
       loading: "Loading",
       success: "Login Success!",
       error: "Email/Password incorrect.",
     });
     if (signUpRequest.status === 200) {
+      localStorage.setItem("token", signUpRequest.data.token);
       setLogged(true);
     }
   }

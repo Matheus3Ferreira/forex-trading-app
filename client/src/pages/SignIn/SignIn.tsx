@@ -4,11 +4,23 @@ import toast, { Toaster } from "react-hot-toast";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import "./index.css";
 import api from "../../services/api";
-import ValidationFormData from "../../components/ValidationFormData";
+import ValidationAuthenticationData from "../../components/ValidationAuthenticationData/ValidationAuthenticationData";
 
 interface IInputField {
   email: string;
   password: string;
+}
+
+interface IResponseData {
+  token: string;
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+    wallet: number;
+    trades: string[];
+    createdAt: Date;
+  };
 }
 
 export default function SignIn() {
@@ -34,13 +46,14 @@ export default function SignIn() {
 
   async function submitForm(event: ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!ValidationFormData(inputField)) return;
+    if (!ValidationAuthenticationData(inputField)) return;
     const signInRequest = await toast.promise(signInFunction(inputField), {
       loading: "Loading",
       success: "Login Success!",
       error: "Email/Password incorrect.",
     });
     if (signInRequest.status === 200) {
+      localStorage.setItem("token", signInRequest.data.token);
       setLogged(true);
     }
   }
