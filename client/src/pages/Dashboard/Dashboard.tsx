@@ -1,35 +1,32 @@
 import "./index.scss";
 import OpenTrade from "../../components/OpenTrade/OpenTrade";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import api from "../../services/api";
-import { AxiosResponse } from "axios";
+import DepositModal from "../../components/DepositModal/DepositModal";
+import { Table } from "react-bootstrap";
+import getUserData from "./getUserData";
+
+interface ITrade {
+  _id: string;
+  volume: number;
+  openValueTrade: number;
+  type: string;
+  symbol: string;
+  user: string;
+  openAt: Date;
+  closeAt: Date;
+  closeValueTrade: number;
+  result: number;
+}
 
 interface IUser {
   name: string;
   email: string;
   wallet: number;
-  trades: string[];
+  trades: ITrade[];
 }
 
 export default function Dashboard() {
-  async function getUserData(token: string) {
-    async function getRequest(token: string) {
-      return await api.get("/users/", {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-    }
-    const userData: AxiosResponse = await toast.promise(getRequest(token), {
-      loading: "Loading",
-      success: "Welcome!",
-      error: "Token wrong. :(",
-    });
-    return userData.data;
-  }
-
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<IUser>({
     name: "",
     email: "",
     wallet: 0,
@@ -37,12 +34,12 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    getUserData(localStorage.token).then((user) =>
+    getUserData(localStorage.token).then(({ user, trades }: any) =>
       setUserData({
         name: user.name,
         email: user.email,
         wallet: user.wallet,
-        trades: user.trades,
+        trades: trades,
       })
     );
   }, []);
@@ -50,11 +47,11 @@ export default function Dashboard() {
   return (
     <div className="bg-dark text-white page-container">
       <header className="header-dashboard">
-        <h1>Welcome to your new Forex Trading App</h1>
+        <h1>Forex Trading App</h1>
         <div className="user-personal-data">
           <div className="wallet">
-            <span>$ {userData.wallet.toFixed(2)}</span>
-            <button>Deposit</button>
+            <span className="amount-value">$ {userData.wallet.toFixed(2)}</span>
+            <DepositModal />
           </div>
           <span>Hello {userData.name}</span>
         </div>
@@ -62,10 +59,33 @@ export default function Dashboard() {
       <main>
         <OpenTrade />
       </main>
-      <footer className="dashboard-footer">
-        {userData.trades.map((trade, key) => (
-          <p key={key}>{trade}</p>
-        ))}
+      <footer className="dashboard-footer table-responsive">
+        <Table responsive="true" variant="dark" bordered hover>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Type</th>
+              <th>Symbol pair</th>
+              <th>Volume</th>
+              <th>Open Value</th>
+              <th>Open At</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            {userData.trades.map((trade, key) => (
+              <tr key={key}>
+                <th>{trade._id}</th>
+                <th>{trade.type}</th>
+                <th>{trade.symbol}</th>
+                <th>{trade.volume.toFixed(2)}</th>
+                <th>{trade.openValueTrade}</th>
+                <th>{trade.openAt.toString()}</th>
+                <th>{trade?.result}</th>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </footer>
     </div>
   );
