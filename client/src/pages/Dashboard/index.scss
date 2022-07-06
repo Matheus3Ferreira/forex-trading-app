@@ -1,0 +1,28 @@
+.page-container {
+  height: 100vh;
+  
+  .header-dashboard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+    padding: 0.2rem 2rem;
+    margin-bottom: 0.8rem;
+    .user-personal-data{
+      display: flex;
+      .wallet {
+        margin-right: 0.8rem;
+        padding-right: 0.2rem;
+      }
+    }
+  }
+  
+  .dashboard-footer { 
+    /* Its only for while */
+    position: absolute; 
+    bottom: 0px;
+  }
+}
+
+
+

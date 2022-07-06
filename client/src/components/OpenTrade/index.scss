@@ -1,0 +1,65 @@
+.container-open-trade {
+  margin-left: 0.8rem;
+
+  .trade-values-container {
+    display: flex;
+    margin: 1rem 0;
+    
+    .create-trade-btn {
+      background-color: transparent;
+      border: none;
+      border-radius: .4rem;
+      width: 10rem;
+      color: #FFF;
+      text-align: left;
+      padding: .5rem 1rem;
+  
+      .operation-btn {
+        text-align: right;
+      }
+      
+    }
+    
+    .create-trade-btn:hover {
+      filter: brightness(1.2)
+    }
+    
+    .buy-trade-btn {
+      background-color: #14089e; 
+    }
+    
+    .sell-trade-btn {
+      background-color: #26bf31;
+    }
+    
+    
+    .volume-container {
+      display: flex;
+      flex-direction: column;
+      height: 4rem;
+      justify-content: center;
+      align-items: center;
+      background: #404040;
+      margin: 0 .4rem;
+      border-radius: .4rem;
+   
+      .input-volume {
+        border: none;
+        color: #FFF;
+        background: transparent;
+        width: 12ch;
+        text-align: right;
+      }
+      
+      .input-volume:focus {
+        box-shadow: none;
+        background: transparent;
+        color: #FFF;
+      }
+
+    }
+
+  }
+
+}
+
