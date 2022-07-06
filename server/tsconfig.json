@@ -25,5 +25,5 @@
     "src",
     "src/index.ts",
     "src/@types"
-  ]
+, "coverage/__tests__2", "coverage/__tests__"  ]
 }
