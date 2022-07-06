@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import toast, { Toaster } from "react-hot-toast";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import "./index.scss";
 import api from "../../services/api";
 import ValidationAuthenticationData from "../../components/ValidationAuthenticationData/ValidationAuthenticationData";
@@ -9,18 +9,6 @@ import ValidationAuthenticationData from "../../components/ValidationAuthenticat
 interface IInputField {
   email: string;
   password: string;
-}
-
-interface IResponseData {
-  token: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-    wallet: number;
-    trades: string[];
-    createdAt: Date;
-  };
 }
 
 export default function SignIn() {
