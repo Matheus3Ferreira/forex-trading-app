@@ -29,7 +29,11 @@ export default function SignUp() {
   }
 
   async function signUpFunction({ fullName, email, password }: IInputField) {
-    const response = await api.post("/users", { fullName, email, password });
+    const response = await api.post("/users", {
+      name: fullName,
+      email: email,
+      password: password,
+    });
     return response;
   }
 
@@ -38,10 +42,11 @@ export default function SignUp() {
     if (!ValidationAuthenticationData(inputField)) return;
     const signUpRequest = await toast.promise(signUpFunction(inputField), {
       loading: "Loading",
-      success: "Login Success!",
-      error: "Email/Password incorrect.",
+      success: "Registration successful!",
+      error: "Email already exists. Try sign in.",
     });
-    if (signUpRequest.status === 200) {
+    console.log(signUpRequest);
+    if (signUpRequest.status === 201) {
       localStorage.setItem("token", signUpRequest.data.token);
       setLogged(true);
     }
