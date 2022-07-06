@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import CloseTradeService from "../services/CloseTradeService";
+import GetAllAndFilterService from "../services/GetAllAndFilterService";
 import GetCurrency from "../services/GetCurrencyService";
 import OpenTradeService from "../services/OpenTradeService";
 
@@ -16,6 +17,23 @@ interface IRequestBodyCurrency {
 }
 
 export default class TradeController {
+  public async getAll(
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    const userId = request.userId;
+
+    const getService = new GetAllAndFilterService();
+    try {
+      const trades = await getService.execute({ userId });
+
+      return response.status(200).json(trades);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   public async open(
     request: Request,
     response: Response,

@@ -5,6 +5,8 @@ import TradeController from "../controllers/TradeController";
 const tradesRouter = Router();
 const tradeController = new TradeController();
 
+tradesRouter.get("/", tradeController.getAll);
+
 tradesRouter.post(
   "/",
   celebrate({
