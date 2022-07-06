@@ -1,7 +1,7 @@
 import { ChangeEvent } from "react";
 import { FormEvent, useState } from "react";
 import { Dropdown, Form } from "react-bootstrap";
-import "./index.css";
+import "./index.scss";
 import verifyVolumeData from "./verifyVolumeData";
 
 export default function OpenTrade() {

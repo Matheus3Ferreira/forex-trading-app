@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import toast, { Toaster } from "react-hot-toast";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import "./index.css";
+import "./index.scss";
 import api from "../../services/api";
 import ValidationAuthenticationData from "../../components/ValidationAuthenticationData/ValidationAuthenticationData";
 

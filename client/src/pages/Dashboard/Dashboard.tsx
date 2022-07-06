@@ -1,4 +1,4 @@
-import "./index.css";
+import "./index.scss";
 import OpenTrade from "../../components/OpenTrade/OpenTrade";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
