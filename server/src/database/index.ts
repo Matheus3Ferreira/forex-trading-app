@@ -10,6 +10,6 @@ export default async function connectDatabase() {
 
   mongoose.connect(connectionString);
   mongoose.connection.on("connected", function () {
-    console.log("Connected to Database " + "test");
+    console.log("Connected to Database");
   });
 }
