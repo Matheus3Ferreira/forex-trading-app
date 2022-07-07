@@ -1,19 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import CloseTradeService from "../services/CloseTradeService";
 import GetAllAndFilterService from "../services/GetAllAndFilterService";
-import GetCurrency from "../services/GetCurrencyService";
+import GetCurrencyService from "../services/GetCurrencyService";
 import OpenTradeService from "../services/OpenTradeService";
 
 interface IRequestBodyCreate {
+  symbol: string;
   volume: number;
   type: string;
-  to: string;
-  from: string;
-}
-
-interface IRequestBodyCurrency {
-  to: string;
-  from: string;
 }
 
 export default class TradeController {
@@ -23,10 +17,11 @@ export default class TradeController {
     next: NextFunction
   ): Promise<Response | void> {
     const userId = request.userId;
+    const filter: string[] | void = request.body.filter;
 
     const getService = new GetAllAndFilterService();
     try {
-      const trades = await getService.execute({ userId });
+      const trades = await getService.execute({ userId, filter });
 
       return response.status(200).json(trades);
     } catch (err) {
@@ -39,7 +34,7 @@ export default class TradeController {
     response: Response,
     next: NextFunction
   ): Promise<Response | void> {
-    const { volume, type, from, to }: IRequestBodyCreate = request.body;
+    const { symbol, volume, type }: IRequestBodyCreate = request.body;
 
     const userId: string = request.userId;
 
@@ -47,11 +42,10 @@ export default class TradeController {
     try {
       const trade = await openTradeService.execute(
         {
+          symbol,
           volume,
           type,
           userId,
-          from,
-          to,
         },
         next
       );
@@ -79,10 +73,9 @@ export default class TradeController {
     response: Response,
     next: NextFunction
   ) {
-    const { to, from }: IRequestBodyCurrency = request.body;
-    const currencyService = new GetCurrency();
+    const currencyService = new GetCurrencyService();
     try {
-      const currency = await currencyService.execute({ to, from });
+      const currency = await currencyService.execute();
       return response.status(200).json(currency);
     } catch (err) {
       next(err);

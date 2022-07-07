@@ -11,10 +11,9 @@ tradesRouter.post(
   "/",
   celebrate({
     [Segments.BODY]: {
+      symbol: Joi.string().required(),
       volume: Joi.number().required(),
       type: Joi.string().required().lowercase(),
-      to: Joi.string().required().uppercase(),
-      from: Joi.string().required().uppercase(),
     },
   }),
   tradeController.open
@@ -22,15 +21,6 @@ tradesRouter.post(
 
 tradesRouter.put("/", tradeController.close);
 
-tradesRouter.get(
-  "/currencies/",
-  celebrate({
-    [Segments.BODY]: {
-      to: Joi.string().required().uppercase(),
-      from: Joi.string().required().uppercase(),
-    },
-  }),
-  tradeController.currency
-);
+tradesRouter.get("/currencies/", tradeController.currency);
 
 export default tradesRouter;

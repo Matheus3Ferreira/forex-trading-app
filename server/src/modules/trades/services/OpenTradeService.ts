@@ -6,19 +6,18 @@ import GetCurrency from "./GetCurrencyService";
 import ITrade from "./ITradeService";
 
 interface IRequest {
+  symbol: string;
   volume: number;
   type: string;
   userId: string;
-  to: string;
-  from: string;
 }
 
 export default class OpenTradeService {
   public async execute(
-    { volume, type, userId, to, from }: IRequest,
+    { symbol, volume, type, userId }: IRequest,
     next: NextFunction
   ) {
-    if (!to || !from) throw new Error("Symbol to/from is not valid.");
+    if (!symbol) throw new Error("Symbol to/from is not valid.");
 
     if (!volume || volume < 0.01 || volume > 100)
       throw new Error("Invalid volume value");
@@ -33,12 +32,10 @@ export default class OpenTradeService {
 
     const currencyService = new GetCurrency();
     try {
-      const currency: number = await currencyService.execute({
-        to: to,
-        from: from,
-      });
-      const symbol = to + from;
+      const getCurrency = await currencyService.execute();
 
+      const currency =
+        type === "sell" ? getCurrency.askPrice : getCurrency.bidPrice;
       const trade: ITrade | any = await Trade.create({
         openValueTrade: currency,
         symbol: symbol,

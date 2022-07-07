@@ -1,5 +1,5 @@
 .page-container {
-  height: 100vh;
+  height: 100%;
   
   .header-dashboard {
     display: flex;
@@ -26,9 +26,6 @@
   
   .dashboard-footer { 
     /* Its only for while */
-    position: absolute; 
-    bottom: 0px;
-    width: 100%;
     margin: 0 1rem;
   }
 }

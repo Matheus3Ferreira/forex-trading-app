@@ -14,24 +14,46 @@ export default class CloseTradeService {
       if (!tradeId) throw new Error("Invalid trade ID");
 
       const findTrade: ITrade | any = await Trade.findById(tradeId);
+
       if (!findTrade) throw new Error("Trade not found");
+
       if (!!findTrade.result) throw new Error("Trade is already closed.");
+
       const user: IUser | any = await User.findById(findTrade.user.toString());
-      const currencyService = new GetCurrency();
-      const currencyData: number = await currencyService.execute({
-        to: findTrade.symbol.slice(0, 3),
-        from: findTrade.symbol.slice(3),
-      });
+
+      const currencyService: GetCurrency = new GetCurrency();
+      const currencyData: {
+        bidPrice: number;
+        askPrice: number;
+      } = await currencyService.execute();
+
+      const confirmCurrency =
+        findTrade.symbol === "GBPUSD"
+          ? currencyData
+          : {
+              bidPrice: 1 / currencyData.bidPrice,
+              askPrice:
+                1 /
+                (currencyData.askPrice -
+                  (currencyData.askPrice - currencyData.bidPrice) * 2),
+            };
+
       const calculationService = new CalculationResultService();
       const result: number = await calculationService.execute({
         openValueTrade: findTrade.openValueTrade,
-        closeValueTrade: currencyData,
+        closeValueTrade:
+          findTrade.type == "sell"
+            ? confirmCurrency.askPrice
+            : confirmCurrency.bidPrice,
         type: findTrade.type,
         volume: findTrade.volume,
       });
 
       await Trade.findByIdAndUpdate(tradeId, {
-        closeValueTrade: currencyData,
+        closeValueTrade:
+          findTrade.type == "sell"
+            ? confirmCurrency.askPrice
+            : confirmCurrency.bidPrice,
         result: result,
         closeAt: new Date(),
       });

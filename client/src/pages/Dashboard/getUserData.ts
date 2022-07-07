@@ -25,7 +25,10 @@ interface IResponse {
   trades: ITrade[];
 }
 
-export default async function getUserData(token: string): Promise<IResponse> {
+export default async function getUserData(
+  token: string,
+  filters: string[] | void
+): Promise<IResponse> {
   async function getRequest(token: string) {
     return await api.get("/users/", {
       headers: {
@@ -40,12 +43,21 @@ export default async function getUserData(token: string): Promise<IResponse> {
       },
     });
   }
-  const userData: AxiosResponse = await toast.promise(getRequest(token), {
-    loading: "Loading",
-    success: "Welcome!",
-    error: "Something goes wrong. :(",
-  });
-  const trades = await getTradesData(token);
+  async function getTradeDataFilter(token: string, filters: string[]) {
+    return await api.get("/trades/", {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+      data: {
+        filters,
+      },
+    });
+  }
+  const userData = await getRequest(token);
+
+  const trades = !filters
+    ? await getTradesData(token)
+    : await getTradeDataFilter(token, filters);
   const responseData = {
     user: userData.data,
     trades: trades.data,

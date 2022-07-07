@@ -1,0 +1,23 @@
+.modal-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    .container-modal-body {
+        padding: 1rem;
+        
+        .input-amount{
+            width: auto;
+        }
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    
+
+}

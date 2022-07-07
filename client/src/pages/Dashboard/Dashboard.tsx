@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import DepositModal from "../../components/DepositModal/DepositModal";
 import { Table } from "react-bootstrap";
 import getUserData from "./getUserData";
+// import { socket } from "../../services/socket";
+import { io } from "socket.io-client";
+import socket from "../../services/socket";
 
 interface ITrade {
   _id: string;
@@ -25,6 +28,11 @@ interface IUser {
   trades: ITrade[];
 }
 
+interface ICurrency {
+  bidPrice: number;
+  askPrice: number;
+}
+
 export default function Dashboard() {
   const [userData, setUserData] = useState<IUser>({
     name: "",
@@ -33,6 +41,18 @@ export default function Dashboard() {
     trades: [],
   });
 
+  const [currency, setCurrency] = useState<ICurrency>({
+    bidPrice: 0,
+    askPrice: 0,
+  });
+
+  const [symbol, setSymbol] = useState<string>("");
+
+  socket.on("connect", () => {
+    console.log("[IO] Connection sucessfully established");
+  });
+
+  const [intervalId, setIntervalId] = useState<any>({});
   useEffect(() => {
     getUserData(localStorage.token).then(({ user, trades }: any) =>
       setUserData({
@@ -43,6 +63,25 @@ export default function Dashboard() {
       })
     );
   }, []);
+
+  useEffect(() => {
+    if (JSON.stringify(intervalId) !== "{}") {
+      clearInterval(intervalId);
+      console.log("Fechado! Ninguém passa.");
+    }
+    if (symbol) {
+      const interval = setInterval(() => {
+        socket.emit("get-currency", symbol);
+        socket.on("get-currency", (currencyData) => {
+          setCurrency({
+            askPrice: parseFloat(currencyData.askPrice.toFixed(5)),
+            bidPrice: parseFloat(currencyData.bidPrice.toFixed(5)),
+          });
+        });
+      }, 1000);
+      setIntervalId(interval);
+    }
+  }, [symbol]);
 
   return (
     <div className="bg-dark text-white page-container">
@@ -57,7 +96,12 @@ export default function Dashboard() {
         </div>
       </header>
       <main>
-        <OpenTrade />
+        <OpenTrade
+          symbol={setSymbol}
+          currency={currency}
+          setUserData={setUserData}
+          userData={userData}
+        />
       </main>
       <footer className="dashboard-footer table-responsive">
         <Table responsive="true" variant="dark" bordered hover>

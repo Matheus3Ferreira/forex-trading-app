@@ -16,6 +16,12 @@ export default class GetAllAndFilterService {
     const tradesByUser = await Promise.all(
       trades.map(async (tradeId) => await Trade.findById(tradeId))
     );
-    return tradesByUser.filter((trade) => trade != null);
+    if (!filter) return tradesByUser.filter((trade) => trade != null);
+    if (filter.includes("opened"))
+      return tradesByUser.filter(
+        (trade) => trade != null && !("result" in trade)
+      );
+    if (filter.includes("closed"))
+      return tradesByUser.filter((trade) => trade != null && "result" in trade);
   }
 }

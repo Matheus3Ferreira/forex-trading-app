@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import toast, { Toaster } from "react-hot-toast";
 import { Link, Navigate } from "react-router-dom";
@@ -45,7 +45,6 @@ export default function SignUp() {
       success: "Registration successful!",
       error: "Email already exists. Try sign in.",
     });
-    console.log(signUpRequest);
     if (signUpRequest.status === 201) {
       localStorage.setItem("token", signUpRequest.data.token);
       setLogged(true);
