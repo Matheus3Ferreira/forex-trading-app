@@ -6,6 +6,7 @@ import getUserData from "./getUserData";
 import socket from "../../services/socket";
 import OpenedTableTrades from "../../components/OpenedTableTrades/OpenedTableTrades";
 import { Spinner } from "react-bootstrap";
+import HistoricTrades from "../../components/HistoricTrades/HistoricTrades";
 
 interface ITrade {
   _id: string;
@@ -104,7 +105,7 @@ export default function Dashboard() {
         <div className="user-personal-data">
           <div className="wallet">
             <span className="amount-value">$ {userData.wallet.toFixed(2)}</span>
-            <DepositModal />
+            <DepositModal setWallet={setWallet} />
           </div>
           <span>Hello {userData.name}</span>
         </div>
@@ -125,6 +126,8 @@ export default function Dashboard() {
           symbol={symbol}
           setWallet={setWallet}
         />
+
+        <HistoricTrades trades={userData.trades} />
       </footer>
     </div>
   );

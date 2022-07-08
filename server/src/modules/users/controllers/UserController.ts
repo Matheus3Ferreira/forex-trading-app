@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import UpdateWallet from "../../trades/services/UpdateWallet";
 import CreateUserService from "../services/CreateUserService";
 import DeleteUserService from "../services/DeleteUserService";
 import findOneByIdService from "../services/FindOneByIdService";
@@ -38,6 +39,26 @@ export default class UserController {
       const user = await findUser.execute(id);
 
       return response.status(200).json(user);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  public async update(
+    request: Request,
+    response: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    const userId: string = request.userId;
+    const sumResult: number = request.body.sumResult;
+    const walletService = new UpdateWallet();
+
+    try {
+      const newUserWallet = await walletService.execute(
+        { userId, sumResult },
+        next
+      );
+      return response.status(200).json(newUserWallet);
     } catch (err) {
       next(err);
     }

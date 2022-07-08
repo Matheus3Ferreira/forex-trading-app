@@ -17,7 +17,8 @@
     "removeComments": false,
     "noEmit": false,
     "typeRoots": [
-      "./src/@types"
+      "./src/@types",
+      "./node_modules/@types"
     ]
   },
   "include": [
@@ -25,5 +26,5 @@
     "src",
     "src/index.ts",
     "src/@types"
-, "coverage/__tests__2", "coverage/__tests__"  ]
+, "coverage/__tests__2", "coverage/__tests__", "jest.config.ts"  ]
 }

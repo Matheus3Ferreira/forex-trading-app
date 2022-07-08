@@ -1,6 +1,7 @@
 import connectDatabase from "../../../database";
 import OpenTradeService from "../services/OpenTradeService";
 import { NextFunction } from "express";
+import findOneByIdService from "../../users/services/FindOneByIdService";
 
 describe("Trades Services", () => {
   beforeAll(() => connectDatabase());
@@ -11,17 +12,19 @@ describe("Trades Services", () => {
       const openTradeService = new OpenTradeService();
       const newTrade = await openTradeService.execute(
         {
+          symbol: "USDGBP",
           volume: 0.5,
           type: "buy",
           userId: userIdTest,
-          to: "USD",
-          from: "GBP",
         },
         () => {}
       );
       expect(newTrade).toHaveProperty("_id");
-
-      it("should find trade Id in users list trade", () => {});
+    });
+    it("should find trade Id in users list trade", async () => {
+      const findUserService = new findOneByIdService();
+      const user = await findUserService.execute(userIdTest);
+      console.log(user);
     });
   });
 });

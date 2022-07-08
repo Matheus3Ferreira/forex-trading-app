@@ -18,6 +18,8 @@ usersRouter.post(
   userController.create
 );
 
+usersRouter.put("/", ensureAuthenticated, userController.update);
+
 usersRouter.get("/", ensureAuthenticated, userController.findOne);
 
 usersRouter.delete("/", ensureAuthenticated, userController.delete);
