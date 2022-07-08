@@ -27,25 +27,25 @@ describe("Sign Up page", () => {
 
     expect(screen.getByText("Full name")).toBeInTheDocument();
   });
-  // it("should insert inside inputs and submit, beeing redirected to Dashboard page", async () => {
-  //   const { getByText, getByPlaceholderText } = render(
-  //     <BrowserRouter>
-  //       <SignUp />
-  //     </BrowserRouter>
-  //   );
+  it("should insert inside inputs and submit, beeing redirected to Dashboard page", async () => {
+    const { getByText, getByPlaceholderText } = render(
+      <BrowserRouter>
+        <SignUp />
+      </BrowserRouter>
+    );
 
-  //   const inputFullName = getByPlaceholderText("Enter your name");
-  //   const inputEmail = getByPlaceholderText("youremail@example.com");
-  //   const inputPassword = getByPlaceholderText("********");
-  //   const submitButton = getByText("Registry");
+    const inputFullName = getByPlaceholderText("Enter your name");
+    const inputEmail = getByPlaceholderText("youremail@example.com");
+    const inputPassword = getByPlaceholderText("********");
+    const submitButton = getByText("Registry");
 
-  //   userEvent.type(inputFullName, "Matheus Teste");
-  //   userEvent.type(inputEmail, "NewEmailTest12143@email.com");
-  //   userEvent.type(inputPassword, "thisIsSecret123");
+    userEvent.type(inputFullName, "Matheus Teste");
+    userEvent.type(inputEmail, "NewEmailTest12143@email.com");
+    userEvent.type(inputPassword, "thisIsSecret123");
 
-  //   userEvent.click(submitButton);
-  //   setTimeout(() => {
-  //     expect(screen.getByText("Forex")).toBeInTheDocument();
-  //   }, 2000);
-  // });
+    userEvent.click(submitButton);
+    setTimeout(() => {
+      expect(screen.getByText("Forex")).toBeInTheDocument();
+    }, 2000);
+  });
 });

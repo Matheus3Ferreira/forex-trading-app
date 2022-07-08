@@ -61,7 +61,7 @@ export default function DepositModal({ setWallet }: IModalProps) {
             Close
           </Button>
           <Button variant="success" onClick={depositValue}>
-            Deposity
+            Deposit
           </Button>
         </Modal.Footer>
       </Modal>
