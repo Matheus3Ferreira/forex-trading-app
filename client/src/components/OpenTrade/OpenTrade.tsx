@@ -33,6 +33,7 @@ interface IOpenTradeProps {
   };
   setUserData: React.Dispatch<React.SetStateAction<IUser>>;
   userData: IUser;
+  setWallet: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface ICreateTrade {
@@ -46,6 +47,7 @@ export default function OpenTrade({
   currency,
   setUserData,
   userData,
+  setWallet,
 }: IOpenTradeProps) {
   const [dropdownValue, setDropdownValue] = useState<string>(
     "Select your currency"
@@ -67,8 +69,8 @@ export default function OpenTrade({
         },
       }
     );
+    setWallet(userData.wallet - response.data.openValueTrade);
     setUserData({ ...userData, trades: [...userData.trades, response.data] });
-    return console.log(userData.trades);
   }
 
   return (
@@ -99,7 +101,10 @@ export default function OpenTrade({
       </Dropdown>
       <div className="trade-values-container">
         <button
-          className="create-trade-btn buy-trade-btn"
+          disabled={dropdownValue === "Select your currency" ? true : false}
+          className={`create-trade-btn buy-trade-btn ${
+            dropdownValue === "Select your currency" ? "disable" : "enable"
+          }`}
           onClick={() =>
             createTrade({ symbol: dropdownValue, volume: volume, type: "buy" })
           }
@@ -122,7 +127,10 @@ export default function OpenTrade({
           />
         </div>
         <button
-          className="create-trade-btn sell-trade-btn"
+          className={`create-trade-btn sell-trade-btn ${
+            dropdownValue === "Select your currency" ? "disable" : "enable"
+          }`}
+          disabled={dropdownValue === "Select your currency" ? true : false}
           onClick={() =>
             createTrade({ symbol: dropdownValue, volume: volume, type: "sell" })
           }
