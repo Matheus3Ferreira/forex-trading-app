@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
 import api from "../../services/api";
 import "./index.scss";

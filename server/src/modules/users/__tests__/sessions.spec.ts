@@ -8,7 +8,7 @@ describe("Create Session Service", () => {
 
   it("should create a session and provide a token", async () => {
     const userData = {
-      email: "john1@test.com",
+      email: "john@test.com",
       password: "test123",
     };
 

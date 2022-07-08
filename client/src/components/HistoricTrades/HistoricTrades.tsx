@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Table } from "react-bootstrap";
 
 interface ITrade {
   _id: string;

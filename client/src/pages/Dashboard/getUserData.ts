@@ -1,5 +1,3 @@
-import { AxiosResponse } from "axios";
-import toast from "react-hot-toast";
 import api from "../../services/api";
 
 interface ITrade {

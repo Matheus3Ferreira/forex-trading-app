@@ -21,10 +21,70 @@ describe("Trades Services", () => {
       );
       expect(newTrade).toHaveProperty("_id");
     });
-    it("should find trade Id in users list trade", async () => {
-      const findUserService = new findOneByIdService();
-      const user = await findUserService.execute(userIdTest);
-      console.log(user);
+    it("should spend error with invalid information", async () => {
+      const invalidRequest = {
+        symbol: "",
+        volume: 0,
+        type: "trade",
+        userId: "",
+      };
+
+      const validRequest = {
+        symbol: "USDGBP",
+        volume: 1,
+        type: "buy",
+        userId: userIdTest,
+      };
+
+      const openTradeService = new OpenTradeService();
+
+      await expect(
+        openTradeService.execute(
+          {
+            symbol: validRequest.symbol,
+            volume: invalidRequest.volume,
+            type: validRequest.type,
+            userId: validRequest.userId,
+          },
+          () => {}
+        )
+      ).rejects.toEqual(new Error("Invalid volume value"));
+
+      await expect(
+        openTradeService.execute(
+          {
+            symbol: validRequest.symbol,
+            volume: validRequest.volume,
+            type: invalidRequest.type,
+            userId: validRequest.userId,
+          },
+          () => {}
+        )
+      ).rejects.toEqual(new Error("Invalid type"));
+
+      await expect(
+        openTradeService.execute(
+          {
+            symbol: validRequest.symbol,
+            volume: validRequest.volume,
+            type: validRequest.type,
+            userId: invalidRequest.userId,
+          },
+          () => {}
+        )
+      ).rejects.toEqual(new Error("Id not provide"));
+
+      await expect(
+        openTradeService.execute(
+          {
+            symbol: invalidRequest.symbol,
+            volume: validRequest.volume,
+            type: validRequest.type,
+            userId: validRequest.userId,
+          },
+          () => {}
+        )
+      ).rejects.toEqual(new Error("Symbol to/from is not valid."));
     });
   });
 });
