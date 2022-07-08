@@ -35,9 +35,20 @@ export default class OpenTradeService {
       const getCurrency = await currencyService.execute();
 
       const currency =
-        type === "sell" ? getCurrency.askPrice : getCurrency.bidPrice;
+        symbol === "GBPUSD"
+          ? getCurrency
+          : {
+              bidPrice: 1 / getCurrency.bidPrice,
+              askPrice:
+                1 /
+                (getCurrency.askPrice -
+                  (getCurrency.askPrice - getCurrency.bidPrice) * 2),
+            };
       const trade: ITrade | any = await Trade.create({
-        openValueTrade: currency,
+        openValueTrade:
+          type === "buy"
+            ? parseFloat(currency.bidPrice.toFixed(4))
+            : parseFloat(currency.askPrice.toFixed(4)),
         symbol: symbol,
         volume: volume,
         user: user._id,

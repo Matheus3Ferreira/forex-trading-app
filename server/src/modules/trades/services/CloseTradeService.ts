@@ -1,5 +1,4 @@
 import { NextFunction } from "express";
-import { ObjectId } from "mongoose";
 import User from "../../users/models/user";
 import IUser from "../../users/services/IUserService";
 import Trade from "../models/trades";
@@ -52,8 +51,8 @@ export default class CloseTradeService {
       await Trade.findByIdAndUpdate(tradeId, {
         closeValueTrade:
           findTrade.type == "sell"
-            ? confirmCurrency.askPrice
-            : confirmCurrency.bidPrice,
+            ? parseFloat(confirmCurrency.askPrice.toFixed(4))
+            : parseFloat(confirmCurrency.bidPrice.toFixed(4)),
         result: result,
         closeAt: new Date(),
       });
@@ -62,7 +61,7 @@ export default class CloseTradeService {
       return await updateWalletService.execute(
         {
           userId: user._id.toString(),
-          sumResult: result,
+          sumResult: parseFloat(result.toFixed(4)),
         },
         next
       );

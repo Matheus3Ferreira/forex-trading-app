@@ -65,7 +65,7 @@ export default function SignUp() {
           <Form.Control
             type="text"
             name="fullName"
-            placeholder="Matheus da Silva Ferreira"
+            placeholder="Enter your name"
             autoFocus
             value={inputField.fullName}
             onChange={handleInputChange}

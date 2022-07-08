@@ -56,7 +56,7 @@ export default class TradeController {
   }
 
   public async close(request: Request, response: Response, next: NextFunction) {
-    const tradeId: string = request.userId;
+    const tradeId: string = request.body.tradeId;
 
     const closeTradeService = new CloseTradeService();
 
